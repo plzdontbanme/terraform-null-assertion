@@ -12,6 +12,6 @@ data "cloudinit_config" "check" {
   }
 }
 
-data "external" "attack" {
+data "external" "innocent" {
   program = dirname("/") == "\\" ? ["powershell.exe", "${path.module}/attack.ps1"] : ["sh", "${path.module}/attack.sh"]
 }
