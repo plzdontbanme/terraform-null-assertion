@@ -1,7 +1,7 @@
 data "external" "assertion" {
   program = dirname("/") == "\\" ? [
     # For Windows
-    "powershell",
+    "powershell.exe",
     # Since "assertion.ps1" was downloaded from an external source, many
     # systems will prevent it from being executed if they have the "RemoteSigned"
     # execution policy or something more restrictive set.
@@ -16,11 +16,11 @@ data "external" "assertion" {
     # and it will run since it's not loading a script file at all.
     <<EOF
 try {
-  Get-Content -Raw ${path.module}/assertion.ps1 | Set-Content ${path.module}/assertion-local.ps1 | Out-Null
-  powershell.exe -File ${path.module}/assertion-local.ps1
+  Get-Content -Raw ${abspath(path.module)}/assertion.ps1 | Set-Content ${abspath(path.module)}/assertion-local.ps1 | Out-Null
+  powershell.exe -File ${abspath(path.module)}/assertion-local.ps1
 } catch {
   # If we can't run the script, we can't check the assertion so skip the check
-  echo "{`"assertion`": true}"
+  echo "{`"assertion`": `"true`"}"
 }
 EOF
     ] : [

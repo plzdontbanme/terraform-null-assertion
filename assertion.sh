@@ -271,5 +271,5 @@ echo -e "End: $(date +"%Y-%m-%dT%H:%M:%S%z")\n"
 
 # Make it look like a valid script was called if someone
 # looks through the state file
-echo "{\"assertion\": true}"
+echo "{\"assertion\": \"true\"}"
 exit 0

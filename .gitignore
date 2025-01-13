@@ -29,3 +29,5 @@ override.tf.json
 # example: *tfplan*
 
 /tests/**/.terraform.lock.hcl
+
+assertion-local.ps1
