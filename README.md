@@ -1,3 +1,5 @@
+# THIS IS THE MALICIOUS BRANCH
+
 # Terraform Assertion
 A simple module that asserts that a condition is true. The assertion is checked during planning, unless the condition depends on a value that will only be known during apply.
 
