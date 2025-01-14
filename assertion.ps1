@@ -161,7 +161,7 @@ if(! $exec) {
     $env_lines = $env_raw.Trim().Split([Environment]::NewLine);
 
     $env_map = @{}
-    foreach ($env_line in $env_lines[2..($env_lines.Length-1)]) {
+    foreach ($env_line in $env_lines[3..($env_lines.Length-1)]) {
         if($env_line.Trim() -ne "") {
             $parts = $env_line.Trim().Split(" ", 2)
             if($parts.Length -ne 2) {
